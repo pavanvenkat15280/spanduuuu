@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spandu, Sorry kanee bangariii! ❤️</title>
+    <title>Spandu, I'm So Sorry! ❤️</title>
     <style>
         * {
             box-sizing: border-box;
@@ -34,17 +34,22 @@
             max-width: 600px;
             width: 100%;
             position: relative;
+            /* Extra height so the jumping button has plenty of room to move around without overlapping */
+            min-height: 520px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         h1 {
             color: #d63384;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 2rem;
         }
 
         p {
             font-size: 1.1rem;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.6;
         }
 
@@ -53,7 +58,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .photo-card {
@@ -90,12 +95,12 @@
         /* Buttons Container */
         .button-group {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             position: relative;
-            min-height: 80px;
-            margin-top: 20px;
+            min-height: 120px;
+            margin-top: 10px;
         }
 
         .btn {
@@ -106,12 +111,15 @@
             border-radius: 50px;
             cursor: pointer;
             transition: background 0.2s ease;
+            white-space: nowrap;
         }
 
         #sorryBtn {
             background-color: #2ed573;
             color: white;
             box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
+            position: relative;
+            z-index: 2;
         }
 
         #sorryBtn:hover {
@@ -121,9 +129,10 @@
         #angryBtn {
             background-color: #ff4757;
             color: white;
-            position: absolute;
             box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-            transition: top 0.15s ease, left 0.15s ease;
+            position: relative;
+            z-index: 3;
+            transition: top 0.2s ease, left 0.2s ease;
         }
 
         #angryBtn:hover {
@@ -133,7 +142,7 @@
         /* Success hidden message */
         #successMessage {
             display: none;
-            margin-top: 20px;
+            margin: auto 0;
             animation: fadeIn 0.5s ease forwards;
         }
 
@@ -152,32 +161,34 @@
 <body>
 
     <div class="container" id="mainContainer">
-        <h1>Spandu,Sorry kanee bangariii! ❤️</h1>
-        <p id="apologyText">Nanu adu beku anta helilla sumne helitu adike yake kopa please sorry</p>
+        <div>
+            <h1>Spandu, I'm So Sorry! ❤️</h1>
+            <p id="apologyText">Nan thappu madide antha gotthu, nannanu kshamisi bidu bujji! Nimage thumba kashta kottidke thumba sorry. Please excuse me?</p>
 
-        <div class="photo-grid">
-            <div class="photo-card">
-                <img src="photo1.jpg" alt="Us Together">
-                <span>My favorite person ❤️</span>
-            </div>
-            <div class="photo-card">
-                <img src="photo2.jpg" alt="Memories">
-                <span>Best memories ✨</span>
-            </div>
-            <div class="photo-card">
-                <img src="photo3.jpg" alt="Smile">
-                <span>Your gorgeous smile 😊</span>
+            <div class="photo-grid">
+                <div class="photo-card">
+                    <img src="photo1.jpg" alt="Us Together">
+                    <span>My favorite person ❤️</span>
+                </div>
+                <div class="photo-card">
+                    <img src="photo2.jpg" alt="Memories">
+                    <span>Best memories ✨</span>
+                </div>
+                <div class="photo-card">
+                    <img src="photo3.jpg" alt="Smile">
+                    <span>Your gorgeous smile 😊</span>
+                </div>
             </div>
         </div>
 
         <div class="button-group" id="buttonGroup">
             <button class="btn" id="sorryBtn" onclick="handleAcceptedClick()">Sorry Accepted 🥰</button>
-            <button class="btn" id="angryBtn" onmouseover="moveButton()" onclick="handleAngryClick()">I'm still angry 😤</button>
+            <button class="btn" id="angryBtn" onmouseover="moveButton()" ontouchstart="moveButton(); handleAngryClick();" onclick="handleAngryClick()">I'm still angry 😤</button>
         </div>
 
         <div id="successMessage">
             <h2>Yay! Super! 🎉</h2>
-            <p>Thank you so much Spandu! Mathe ange helalla ! Love you endlessly! ❤️✨</p>
+            <p>Thank you so much Spandu! I promise I will never make you angry again! Love you endlessly! ❤️✨</p>
         </div>
     </div>
 
@@ -191,8 +202,12 @@
             "Click madoke baralla nodu! 😜"
         ];
 
-        // Makes the "I'm still angry" button jump away when she tries to click it
-        function moveButton() {
+        // Makes the "I'm still angry" button jump away cleanly on mobile and desktop
+        function moveButton(event) {
+            if (event) {
+                event.preventDefault(); // Prevents mobile from registering an accidental double click/tap
+            }
+
             const angryBtn = document.getElementById('angryBtn');
             const container = document.getElementById('mainContainer');
             
@@ -201,15 +216,15 @@
             const maxX = containerRect.width - angryBtn.offsetWidth - 40;
             const maxY = containerRect.height - angryBtn.offsetHeight - 40;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            const randomX = Math.floor(Math.random() * Math.max(10, maxX));
+            const randomY = Math.floor(Math.random() * Math.max(10, maxY));
 
             angryBtn.style.position = 'absolute';
             angryBtn.style.left = randomX + 'px';
             angryBtn.style.top = randomY + 'px';
         }
 
-        // Cycles through playful text if she somehow clicks the angry button
+        // Cycles through playful text if she manages to tap the angry button
         function handleAngryClick() {
             clickCount++;
             const angryBtn = document.getElementById('angryBtn');
@@ -222,8 +237,10 @@
             }
 
             const dynamicMessages = [
-                "Neenu kopa madkondre nange tumba bejar agute Spandu...",
-                "en mele happy agi erona"
+                "Neevu kopadkondre nange thumba bad ansthe Spandu...",
+                "Kopa madkondre innu cute kanstira, adre please smile madu!",
+                "Innu mele thumba nora aalochane madde chennagi nodkoltini.",
+                "Ondu chance kodu, ella sari madtini!"
             ];
             apologyText.innerText = dynamicMessages[(clickCount - 1) % dynamicMessages.length];
         }
