@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spandu, I'm So Sorry! ❤️</title>
+    <title>Spandu, Sorry kanee bangariii! ❤️</title>
     <style>
         * {
             box-sizing: border-box;
@@ -34,8 +34,7 @@
             max-width: 600px;
             width: 100%;
             position: relative;
-            /* Extra height so the jumping button has plenty of room to move around without overlapping */
-            min-height: 520px; 
+            min-height: 520px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -43,12 +42,12 @@
 
         h1 {
             color: #d63384;
-            margin-bottom: 10px;
-            font-size: 2rem;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
         }
 
         p {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             margin-bottom: 20px;
             line-height: 1.6;
         }
@@ -56,7 +55,7 @@
         /* Photo Gallery Grid */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -67,40 +66,35 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             transform: rotate(-2deg);
-            transition: transform 0.3s ease;
         }
 
         .photo-card:nth-child(even) {
             transform: rotate(2deg);
         }
 
-        .photo-card:hover {
-            transform: scale(1.05) rotate(0deg);
-        }
-
         .photo-card img {
             width: 100%;
-            height: 130px;
+            height: 120px;
             object-fit: cover;
             border-radius: 8px;
         }
 
         .photo-card span {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 6px;
             color: #777;
         }
 
-        /* Buttons Container */
+        /* Buttons Container - Stacked safely for mobile */
         .button-group {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
             position: relative;
-            min-height: 120px;
-            margin-top: 10px;
+            min-height: 110px;
+            margin-top: 15px;
         }
 
         .btn {
@@ -110,8 +104,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: background 0.2s ease;
-            white-space: nowrap;
+            width: 220px;
         }
 
         #sorryBtn {
@@ -122,21 +115,13 @@
             z-index: 2;
         }
 
-        #sorryBtn:hover {
-            background-color: #26af5f;
-        }
-
         #angryBtn {
             background-color: #ff4757;
             color: white;
             box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
             position: relative;
             z-index: 3;
-            transition: top 0.2s ease, left 0.2s ease;
-        }
-
-        #angryBtn:hover {
-            background-color: #ff6b81;
+            transition: top 0.15s ease, left 0.15s ease;
         }
 
         /* Success hidden message */
@@ -162,8 +147,8 @@
 
     <div class="container" id="mainContainer">
         <div>
-            <h1>Spandu, I'm So Sorry! ❤️</h1>
-            <p id="apologyText">Nan thappu madide antha gotthu, nannanu kshamisi bidu bujji! Nimage thumba kashta kottidke thumba sorry. Please excuse me?</p>
+            <h1>Spandu, Sorry kanee bangariii! ❤️</h1>
+            <p id="apologyText">Nanu adu beku anta helilla sumne helitu adike yake kopa please sorry</p>
 
             <div class="photo-grid">
                 <div class="photo-card">
@@ -183,12 +168,13 @@
 
         <div class="button-group" id="buttonGroup">
             <button class="btn" id="sorryBtn" onclick="handleAcceptedClick()">Sorry Accepted 🥰</button>
+            <!-- Added ontouchstart so it jumps instantly before registering a click on mobile -->
             <button class="btn" id="angryBtn" onmouseover="moveButton()" ontouchstart="moveButton(); handleAngryClick();" onclick="handleAngryClick()">I'm still angry 😤</button>
         </div>
 
         <div id="successMessage">
             <h2>Yay! Super! 🎉</h2>
-            <p>Thank you so much Spandu! I promise I will never make you angry again! Love you endlessly! ❤️✨</p>
+            <p>Thank you so much Spandu! Mathe ange helalla ! Love you endlessly! ❤️✨</p>
         </div>
     </div>
 
@@ -202,10 +188,9 @@
             "Click madoke baralla nodu! 😜"
         ];
 
-        // Makes the "I'm still angry" button jump away cleanly on mobile and desktop
         function moveButton(event) {
             if (event) {
-                event.preventDefault(); // Prevents mobile from registering an accidental double click/tap
+                event.preventDefault(); // Prevents double actions on mobile
             }
 
             const angryBtn = document.getElementById('angryBtn');
@@ -213,8 +198,8 @@
             
             const containerRect = container.getBoundingClientRect();
             
-            const maxX = containerRect.width - angryBtn.offsetWidth - 40;
-            const maxY = containerRect.height - angryBtn.offsetHeight - 40;
+            const maxX = containerRect.width - angryBtn.offsetWidth - 30;
+            const maxY = containerRect.height - angryBtn.offsetHeight - 30;
             
             const randomX = Math.floor(Math.random() * Math.max(10, maxX));
             const randomY = Math.floor(Math.random() * Math.max(10, maxY));
@@ -224,7 +209,6 @@
             angryBtn.style.top = randomY + 'px';
         }
 
-        // Cycles through playful text if she manages to tap the angry button
         function handleAngryClick() {
             clickCount++;
             const angryBtn = document.getElementById('angryBtn');
@@ -237,15 +221,12 @@
             }
 
             const dynamicMessages = [
-                "Neevu kopadkondre nange thumba bad ansthe Spandu...",
-                "Kopa madkondre innu cute kanstira, adre please smile madu!",
-                "Innu mele thumba nora aalochane madde chennagi nodkoltini.",
-                "Ondu chance kodu, ella sari madtini!"
+                "Neenu kopa madkondre nange tumba bejar agute Spandu...",
+                "en mele happy agi erona"
             ];
             apologyText.innerText = dynamicMessages[(clickCount - 1) % dynamicMessages.length];
         }
 
-        // Triggered when she happily clicks "Sorry Accepted"
         function handleAcceptedClick() {
             document.getElementById('buttonGroup').style.display = 'none';
             document.getElementById('apologyText').style.display = 'none';
