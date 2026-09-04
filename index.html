@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spandu, Sorry kanee bangariii! ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            color: #4a4a4a;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+
+        h1 {
+            color: #d63384;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Photo Gallery Grid */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .photo-card {
+            background: #fff;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05) rotate(0deg);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .photo-card span {
+            display: block;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            color: #777;
+        }
+
+        /* Buttons Container */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            min-height: 80px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        #sorryBtn {
+            background-color: #2ed573;
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
+        }
+
+        #sorryBtn:hover {
+            background-color: #26af5f;
+        }
+
+        #angryBtn {
+            background-color: #ff4757;
+            color: white;
+            position: absolute;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            transition: top 0.15s ease, left 0.15s ease;
+        }
+
+        #angryBtn:hover {
+            background-color: #ff6b81;
+        }
+
+        /* Success hidden message */
+        #successMessage {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        #successMessage h2 {
+            color: #2ed573;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <h1>Spandu,Sorry kanee bangariii! ❤️</h1>
+        <p id="apologyText">Nanu adu beku anta helilla sumne helitu adike yake kopa please sorry</p>
+
+        <div class="photo-grid">
+            <div class="photo-card">
+                <img src="photo1.jpg" alt="Us Together">
+                <span>My favorite person ❤️</span>
+            </div>
+            <div class="photo-card">
+                <img src="photo2.jpg" alt="Memories">
+                <span>Best memories ✨</span>
+            </div>
+            <div class="photo-card">
+                <img src="photo3.jpg" alt="Smile">
+                <span>Your gorgeous smile 😊</span>
+            </div>
+        </div>
+
+        <div class="button-group" id="buttonGroup">
+            <button class="btn" id="sorryBtn" onclick="handleAcceptedClick()">Sorry Accepted 🥰</button>
+            <button class="btn" id="angryBtn" onmouseover="moveButton()" onclick="handleAngryClick()">I'm still angry 😤</button>
+        </div>
+
+        <div id="successMessage">
+            <h2>Yay! Super! 🎉</h2>
+            <p>Thank you so much Spandu! Mathe ange helalla ! Love you endlessly! ❤️✨</p>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        const kannadaPhrases = [
+            "I'm still angry 😤",
+            "Hogappa, innu kopane! 😒",
+            "Bide bidu, kopa kammi agalla! 😾",
+            "Aashti try madbedu, kopa ide! 🛑",
+            "Click madoke baralla nodu! 😜"
+        ];
+
+        // Makes the "I'm still angry" button jump away when she tries to click it
+        function moveButton() {
+            const angryBtn = document.getElementById('angryBtn');
+            const container = document.getElementById('mainContainer');
+            
+            const containerRect = container.getBoundingClientRect();
+            
+            const maxX = containerRect.width - angryBtn.offsetWidth - 40;
+            const maxY = containerRect.height - angryBtn.offsetHeight - 40;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            angryBtn.style.position = 'absolute';
+            angryBtn.style.left = randomX + 'px';
+            angryBtn.style.top = randomY + 'px';
+        }
+
+        // Cycles through playful text if she somehow clicks the angry button
+        function handleAngryClick() {
+            clickCount++;
+            const angryBtn = document.getElementById('angryBtn');
+            const apologyText = document.getElementById('apologyText');
+            
+            if (clickCount < kannadaPhrases.length) {
+                angryBtn.innerText = kannadaPhrases[clickCount];
+            } else {
+                angryBtn.innerText = "Okay ok, innu mele sorry button click madu! 🙄";
+            }
+
+            const dynamicMessages = [
+                "Neenu kopa madkondre nange tumba bejar agute Spandu...",
+                "en mele happy agi erona"
+            ];
+            apologyText.innerText = dynamicMessages[(clickCount - 1) % dynamicMessages.length];
+        }
+
+        // Triggered when she happily clicks "Sorry Accepted"
+        function handleAcceptedClick() {
+            document.getElementById('buttonGroup').style.display = 'none';
+            document.getElementById('apologyText').style.display = 'none';
+            document.querySelector('.photo-grid').style.display = 'none';
+            document.querySelector('h1').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
